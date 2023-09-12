@@ -1,2 +1,1 @@
-# Ray-Tracer-Assignment-
-Assignment project
+# Assignment project
