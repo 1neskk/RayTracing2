@@ -57,8 +57,7 @@ workspace "PathTracer"
 
         libdirs
         {
-            "%{prj.name}/thirdparty/imgui/lib",
-            "%{prj.name}/thirdparty/glfw/include/GLFW",
+            "%{prj.name}/libs/",
             "%{LibraryDir.VulkanSDK}"
         }
 
