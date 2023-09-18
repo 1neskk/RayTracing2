@@ -10,7 +10,7 @@ LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
 Library = {}
 Library["Vulkan"] = "vulkan-1.lib"
 
-workspace "PathTracer"
+workspace "RayTracing"
     architecture "x64"
 
     configurations
@@ -57,7 +57,7 @@ workspace "PathTracer"
 
         libdirs
         {
-            "%{prj.name}/libs/",
+            "%{prj.name}/libs",
             "%{LibraryDir.VulkanSDK}"
         }
 

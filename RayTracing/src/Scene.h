@@ -14,24 +14,24 @@ struct Ray
 struct Sphere
 {
 	glm::vec3 position{ 0.0f };
-	float radius;
-	int id;
+	float radius = 0.0f;
+	int id = 0;
 };
 
 struct Cube
 {
 	glm::vec3 position{ 0.0f };
-	float size;
-	int id;
+	float size = 0.0f;
+	int id = 0;
 };
 
 struct Material
 {
 	glm::vec3 albedo{ 1.0f };
-	float roughness;
-    float metallic;
-	float reflectivity;
-	int id;
+	float roughness = 0.0f;
+	float metallic = 0.0f;
+	float reflectivity = 0.0f;
+	int id = 0;
 };
 
 struct Settings
