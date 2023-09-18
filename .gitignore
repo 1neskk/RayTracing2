@@ -1,3 +1,6 @@
+# custom path
+RayTracing/libs
+
 # Prerequisites
 *.d
 
