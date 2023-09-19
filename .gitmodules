@@ -1,0 +1,12 @@
+[submodule "RayTracing/thirdparty/glfw"]
+    path = RayTracing/thirdparty/glfw
+    url = https://github.com/glfw/glfw
+[submodule "RayTracing/thirdparty/imgui"]
+    path = RayTracing/thirdparty/imgui
+    url = https://github.com/ocornut/imgui
+[submodule "RayTracing/thirdparty/glm"]
+    path = RayTracing/thirdparty/glm
+    url = https://github.com/g-truc/glm
+[submodule "RayTracing/thirdparty/stb"]
+    path = RayTracing/thirdparty/stb
+    url = https://github.com/nothings/stb
