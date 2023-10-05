@@ -28,15 +28,21 @@ struct Cube
 struct Material
 {
 	glm::vec3 albedo{ 1.0f };
-	float roughness = 0.0f;
-	float metallic = 0.0f;
-	float reflectivity = 0.0f;
+	float diffuse{ 0.0f };
+	float specular{ 0.0f };
+
+	glm::vec3 emissionColor{ 0.0f };
+	float emissionIntensity = 0.0f;
+
 	int id = 0;
+
+	glm::vec3 getEmission() const { return emissionColor * emissionIntensity; }
 };
 
 struct Settings
 {
 	bool accumulation = true;
+	bool skyLight = false;
 };
 
 struct Scene

@@ -13,11 +13,17 @@ public:
 	{
 		Material& mat1 = m_scene.materials.emplace_back();
 		mat1.albedo = { 0.5f, 0.0f, 1.0f };
-		mat1.roughness = 1.0f;
+		mat1.diffuse = 1.0f;
 
 		Material& mat2 = m_scene.materials.emplace_back();
 		mat2.albedo = { 0.0f, 0.0f, 0.0f };
-		mat2.roughness = 0.3f;
+		mat2.diffuse = 0.3f;
+
+		Material& mat3 = m_scene.materials.emplace_back();
+		mat3.albedo = { 0.8f, 0.5f, 0.2f };
+		mat3.diffuse = 0.1f;
+		mat3.emissionColor = mat3.albedo;
+		mat3.emissionIntensity = 20.0f;
 
 		//{
 		//	Cube c;
@@ -30,10 +36,9 @@ public:
 		{
 			Sphere s;
 			s.position = { 0.0f, 0.0f, 0.0f };
-			s.radius = 0.5f;
+			s.radius = 1.0f;
 			s.id = 0;
 			m_scene.spheres.push_back(s);
-
 		}
 
 		{
@@ -41,6 +46,14 @@ public:
 			s.position = { 0.0f, -101.0f, 0.0f };
 			s.radius = 100.0f;
 			s.id = 1;
+			m_scene.spheres.push_back(s);
+		}
+
+		{
+			Sphere s;
+			s.position = { 32.4f, 3.8f, -32.1f };
+			s.radius = 20.3f;
+			s.id = 2;
 			m_scene.spheres.push_back(s);
 		}
 	}
@@ -60,6 +73,8 @@ public:
 		ImGui::Begin("Settings");
 		ImGui::Text("Last render time: %.3fms | (%.1f FPS)", m_lastRenderTime, io.Framerate);
 
+		ImGui::Checkbox("Sky Light", &m_renderer.getSettings().skyLight);
+
 		ImGui::Checkbox("Accumulation", &m_renderer.getSettings().accumulation);
 		if (ImGui::Button("Reset"))
 			m_renderer.resetFrameIndex();
@@ -78,7 +93,7 @@ public:
 			if(ImGui::DragFloat("Radius", &m_scene.spheres[i].radius, 0.01f))
 				m_renderer.resetFrameIndex();
 
-			ImGui::DragInt("Material Index", &m_scene.spheres[i].id, 1.0f, 0, static_cast<int>(m_scene.materials.size() - 1));
+			ImGui::DragInt("Material Index", &m_scene.spheres[i].id, 0.5f, 0, static_cast<int>(m_scene.materials.size() - 1));
 
 			ImGui::Separator();
 			ImGui::PopID();
@@ -90,9 +105,11 @@ public:
 		{
 			ImGui::PushID(i);
 
-			ImGui::ColorEdit3("Color", reinterpret_cast<float*>(& m_scene.materials[i].albedo));
-			ImGui::DragFloat("Roughness", &m_scene.materials[i].roughness, 0.01f, 0.0f, 1.0f);
-			ImGui::DragFloat("Metallic", &m_scene.materials[i].metallic, 0.01f, 0.0f, 1.0f);
+			ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&m_scene.materials[i].albedo)); // glm::value_ptr(m_scene.materials[i].albedo)
+			ImGui::DragFloat("Diffuse", &m_scene.materials[i].diffuse, 0.05f, 0.0f, 1.0f);
+			ImGui::DragFloat("Specular", &m_scene.materials[i].specular, 0.05f, 0.0f, 1.0f);
+			ImGui::ColorEdit3("Emission Color", reinterpret_cast<float*>(&m_scene.materials[i].emissionColor));
+			ImGui::DragFloat("Emission Intensity", &m_scene.materials[i].emissionIntensity, 0.05f, 0.0f, FLT_MAX);
 
 			ImGui::Separator();
 			ImGui::PopID();

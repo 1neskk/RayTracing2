@@ -16,7 +16,7 @@ class Renderer
 	struct HitRecord
 	{
 		float t;
-		glm::vec3 normal;
+		glm::vec3 normal; // World normal
 		glm::vec3 worldPos;
 		Sphere sphere;
 		int objID;
@@ -32,11 +32,13 @@ public:
 
 	void resetFrameIndex() { m_frameIndex = 1; }
 private:
-	HitRecord perPixel(const Ray& ray);
-	HitRecord cubePerPixel(const Ray& ray);
+	HitRecord traceRay(const Ray& ray) const;
+	HitRecord cubeTraceRay(const Ray& ray) const;
+
 	static HitRecord rayMiss(const Ray& ray);
 	HitRecord rayHit(const Ray& ray, float closestT, int index) const;
-	glm::vec4 traceRay(uint32_t x, uint32_t y);
+
+	glm::vec4 perPixel(uint32_t x, uint32_t y) const;
 private:
 	const Scene* m_scene = nullptr;
 	const Camera* m_camera = nullptr;

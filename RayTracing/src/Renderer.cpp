@@ -51,7 +51,7 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
 	{
 		std::for_each(std::execution::par, m_imageWidth.begin(), m_imageWidth.end(), [this, y](uint32_t x)
 		{
-			const glm::vec4 color = traceRay(x, y);
+			const glm::vec4 color = perPixel(x, y);
 			m_accumulation[x + y * m_image->getWidth()] += color;
 			glm::vec4 finalColor = m_accumulation[x + y * m_image->getWidth()] / static_cast<float>(m_frameIndex);
 			finalColor = glm::clamp(finalColor, 0.0f, 1.0f);
@@ -63,7 +63,7 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
 	{
 		for (uint32_t x = 0; x < m_image->getWidth(); x++)
 		{
-			const glm::vec4 color = traceRay(x, y);
+			const glm::vec4 color = perPixel(x, y);
 			m_accumulation[x + y * m_image->getWidth()] += color;
 			glm::vec4 finalColor = m_accumulation[x + y * m_image->getWidth()] / static_cast<float>(m_frameIndex);
 			finalColor = glm::clamp(finalColor, 0.0f, 1.0f);
@@ -79,7 +79,7 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
 		m_frameIndex = 1;
 }
 
-Renderer::HitRecord Renderer::perPixel(const Ray& ray)
+Renderer::HitRecord Renderer::traceRay(const Ray& ray) const
 {
 	int closestSphere = -1;
 	float closestT = std::numeric_limits<float>::max();
@@ -115,45 +115,38 @@ Renderer::HitRecord Renderer::perPixel(const Ray& ray)
 	return rayHit(ray, closestT, closestSphere);
 }
 
-glm::vec4 Renderer::traceRay(uint32_t x, uint32_t y)
+glm::vec4 Renderer::perPixel(uint32_t x, uint32_t y) const
 {
 	Ray ray;
 	ray.origin = m_camera->getPosition();
 	ray.direction = m_camera->getRayDirection()[x + y * m_image->getWidth()];
 
-	glm::vec3 color(0.0f);
-	float m = 1.0f;
-	int b = 5; // bounces per pixel
+	glm::vec3 light(0.0f);
+	glm::vec3 throughput(1.0f);
+	int b = 5; // ray bounces per pixel
 
 	for (int i = 0; i < b; i++)
 	{
-		HitRecord ht = perPixel(ray);
+		HitRecord ht = traceRay(ray);
 		if (ht.t < 0.0f)
 		{
-			//glm::vec3 bgColor = (1.0f - 0.5f) * glm::vec3(1.0f, 1.0f, 1.0f) + 0.5f * glm::vec3(0.5f, 0.7f, 1.0f);
 			glm::vec3 bgColor(0.6f, 0.7f, 0.9f);
-			color += bgColor * m;
+			if (m_settings.skyLight)
+				light += bgColor * throughput;
+			else
+				light += glm::vec3(0.0f);
 			break;
 		}
-
-		glm::vec3 lightDirection = glm::normalize(glm::vec3(-1, -1, -1));
-		float light = glm::dot(-lightDirection, ht.normal);
-		if (light < 0.0f)
-			light = 0.0f;
-
 		const Sphere& sphere = m_scene->spheres[ht.objID];
-		//const Cube& cube = m_scene->cubes[ht.objID];
 		const Material& material = m_scene->materials[sphere.id];
 
-		glm::vec3 sphereColor = material.albedo * light;
-		color += sphereColor * m;
-
-		m *= 0.5f;
+		throughput *= material.albedo;
+		light += material.getEmission();
 
 		ray.origin = ht.worldPos + ht.normal * 0.0001f;
-		ray.direction = glm::reflect(ray.direction, ht.normal + material.roughness * Random::Random::Vec3(-0.5f, 0.5f));
+		ray.direction = glm::normalize(ht.normal + Random::Random::InUnitSphere());
 	}
-	return { color , 1.0f };
+	return { light , 1.0f };
 }
 
 Renderer::HitRecord Renderer::rayMiss(const Ray& ray)
@@ -178,18 +171,18 @@ Renderer::HitRecord Renderer::rayHit(const Ray& ray, float closestT, int index) 
 	return ht;
 }
 
-Renderer::HitRecord Renderer::cubePerPixel(const Ray& ray)
+Renderer::HitRecord Renderer::cubeTraceRay(const Ray& ray) const
 {
 	int closestCube = -1;
 	float tfar = std::numeric_limits<float>::max();
 
-	size_t n = m_scene->cubes.size();
+	const size_t n = m_scene->cubes.size();
 
 	// R(t) = ray.origin + (cube.position - ray.origin) * t
 	for (size_t i = 0; i < n; i++)
 	{
 		const Cube& cube = m_scene->cubes[i];
-		glm::vec3 origin = ray.origin - cube.position;
+		const glm::vec3 origin = ray.origin - cube.position;
 
 		float t1 = (cube.size - origin.x) / ray.direction.x;
 		float t2 = (-cube.size - origin.x) / ray.direction.x;
