@@ -1,4 +1,5 @@
-# A3
+# Ray Tracing
+Continuation of my previous [Ray Tracing](https://github.com/1neskk/raytracing) project
 
 ## Requirements
 - [Vulkan SDK](https://vulkan.lunarg.com/)
