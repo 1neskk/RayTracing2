@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "Timer.h"
 
-class ExampleApp : public Layer
+class ExampleApp final : public Layer
 {
 public:
 	ExampleApp()
@@ -58,7 +58,7 @@ public:
 		}
 	}
 
-	virtual void onUpdate(float dt) override
+	virtual void onUpdate(const float dt) override
 	{
 		if (m_camera.onUpdate(dt))
 			m_renderer.resetFrameIndex();

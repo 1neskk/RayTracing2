@@ -38,7 +38,7 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
 	m_camera = &camera;
 
 	if (m_frameIndex == 1)
-		memset(m_accumulation, 0, m_image->getWidth() * m_image->getHeight() * sizeof(glm::vec4));
+		memset(m_accumulation, 0, static_cast<unsigned long long>(m_image->getWidth()) * m_image->getHeight() * sizeof(glm::vec4));
 
 	if (!m_image)
 	{
@@ -83,16 +83,17 @@ Renderer::HitRecord Renderer::traceRay(const Ray& ray) const
 {
 	int closestSphere = -1;
 	float closestT = std::numeric_limits<float>::max();
-	const int n = m_scene->spheres.size();
+	const size_t n = m_scene->spheres.size();
 
 	for (size_t i = 0; i < n; i++)
 	{
-		const Sphere& sphere = m_scene->spheres[i];
-		glm::vec3 origin = ray.origin - sphere.position;
+		const auto& [position, radius, id] = m_scene->spheres[i];
+
+		glm::vec3 origin = ray.origin - position;
 
 		const float a = glm::dot(ray.direction, ray.direction);
 		const float b = 2.0f * glm::dot(ray.direction, origin);
-		const float c = glm::dot(origin, origin) - sphere.radius * sphere.radius;
+		const float c = glm::dot(origin, origin) - radius * radius;
 		const float discriminant = b * b - 4.0f * a * c;
 
 		if (discriminant < 0.0f)
@@ -137,8 +138,8 @@ glm::vec4 Renderer::perPixel(uint32_t x, uint32_t y) const
 				light += glm::vec3(0.0f);
 			break;
 		}
-		const Sphere& sphere = m_scene->spheres[ht.objID];
-		const Material& material = m_scene->materials[sphere.id];
+		const auto& [position, radius, id] = m_scene->spheres[ht.objID];
+		const Material& material = m_scene->materials[id];
 
 		throughput *= material.albedo;
 		light += material.getEmission();
@@ -156,7 +157,7 @@ Renderer::HitRecord Renderer::rayMiss(const Ray& ray)
 	return ht;
 }
 
-Renderer::HitRecord Renderer::rayHit(const Ray& ray, float closestT, int index) const
+Renderer::HitRecord Renderer::rayHit(const Ray& ray, const float closestT, const int index) const
 {
 	HitRecord ht;
 	ht.t = closestT;
@@ -181,17 +182,17 @@ Renderer::HitRecord Renderer::cubeTraceRay(const Ray& ray) const
 	// R(t) = ray.origin + (cube.position - ray.origin) * t
 	for (size_t i = 0; i < n; i++)
 	{
-		const Cube& cube = m_scene->cubes[i];
-		const glm::vec3 origin = ray.origin - cube.position;
+		const auto& [position, size, id] = m_scene->cubes[i];
+		const glm::vec3 origin = ray.origin - position;
 
-		float t1 = (cube.size - origin.x) / ray.direction.x;
-		float t2 = (-cube.size - origin.x) / ray.direction.x;
+		float t1 = (size - origin.x) / ray.direction.x;
+		float t2 = (-size - origin.x) / ray.direction.x;
 
-		float t3 = (cube.size - origin.y) / ray.direction.y;
-		float t4 = (-cube.size - origin.y) / ray.direction.y;
+		float t3 = (size - origin.y) / ray.direction.y;
+		float t4 = (-size - origin.y) / ray.direction.y;
 
-		float t5 = (cube.size - origin.z) / ray.direction.z;
-		float t6 = (-cube.size - origin.z) / ray.direction.z;
+		float t5 = (size - origin.z) / ray.direction.z;
+		float t6 = (-size - origin.z) / ray.direction.z;
 
 		float tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
 		float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
