@@ -1,8 +1,6 @@
 #pragma once
 #include "imgui.h"
 
-#ifdef PT_PLATFORM_WINDOWS
-
 extern Application* createApplication(int argc, char** argv);
 bool g_bRunning = true;
 
@@ -17,8 +15,8 @@ int Main(int argc, char** argv)
 	return 0;
 }
 
-#ifdef PT_DIST
-
+#ifndef NDEBUG
+#pragma comment(linker, "/SUBSYSTEM:windows")
 #include <Windows.h>
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow)
@@ -33,7 +31,6 @@ int main(int argc, char** argv)
 	return Main(argc, argv);
 }
 
-#endif
 #endif
 
 namespace Style
@@ -74,4 +71,3 @@ namespace Style
 		style.ButtonTextAlign = ImVec2(0.5, 0.5);
 	}
 }
-
