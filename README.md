@@ -9,10 +9,9 @@ Continuation of my previous [Ray Tracing](https://github.com/1neskk/raytracing) 
 - ImGui and GLFW binaries are not included in this repository.
 
 ### Get Started with CMake
-1. Clone recursively: `git clone --recursive https://github.com/1neskk/RayTracing2`
-2. Change branch to "cmake" branch using `git checkout cmake` on your cmd
-3. Then run `mkdir build && cd build` to create a new directory
-4. Finally run `cmake ..` to build with CMake
+1. Clone recursively: `git clone --recursive https://github.com/1neskk/RayTracing2 -b cmake`
+2. Then run `mkdir build && cd build` to create a new directory
+3. Finally run `cmake ..` to build with CMake
 
 ### Get Started with Premake (Windows only)
 1. Clone recursively: `git clone --recursive https://github.com/1neskk/RayTracing2`
