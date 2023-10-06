@@ -124,7 +124,10 @@ glm::vec4 Renderer::perPixel(uint32_t x, uint32_t y) const
 
 	glm::vec3 light(0.0f);
 	glm::vec3 throughput(1.0f);
-	int b = 5; // ray bounces per pixel
+	uint32_t seed = x + y * m_image->getWidth();
+	seed *= m_frameIndex;
+
+	int b = 10; // ray bounces per pixel
 
 	for (int i = 0; i < b; i++)
 	{
@@ -145,7 +148,10 @@ glm::vec4 Renderer::perPixel(uint32_t x, uint32_t y) const
 		light += material.getEmission();
 
 		ray.origin = ht.worldPos + ht.normal * 0.0001f;
-		ray.direction = glm::normalize(ht.normal + Random::Random::InUnitSphere());
+		if (m_settings.fastRandom)
+			ray.direction = glm::normalize(ht.normal + Random::Random::PcgInUnitSphere(seed));
+		else
+			ray.direction = glm::normalize(ht.normal + Random::Random::InUnitSphere());
 	}
 	return { light , 1.0f };
 }

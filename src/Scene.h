@@ -43,6 +43,7 @@ struct Settings
 {
 	bool accumulation = true;
 	bool skyLight = false;
+	bool fastRandom = false;
 };
 
 struct Scene

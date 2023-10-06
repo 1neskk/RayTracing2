@@ -43,11 +43,29 @@ namespace Random
 		{
 			return glm::normalize(Vec3(-1.0f, 1.0f));
 		}
+
+				static glm::vec3 PcgInUnitSphere(uint32_t& seed)
+		{
+			return glm::normalize(glm::vec3(PcgFloat(seed) * 2.0f - 1.0f, PcgFloat(seed) * 2.0f - 1.0f, PcgFloat(seed) * 2.0f - 1.0f));
+		}
+
+		static uint32_t PcgHash(uint32_t& seed)
+		{
+			uint32_t state = seed * 747796405u + 2891336453u;
+			uint32_t word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
+			return (word >> 22u) ^ word;
+		}
+
+		static float PcgFloat(uint32_t& seed)
+		{
+			seed = PcgHash(seed);
+			return static_cast<float>(seed) / static_cast<float>(std::numeric_limits<uint32_t>::max());
+		}
 	private:
-		static std::mt19937 s_RandomEngine;
+		static thread_local std::mt19937 s_RandomEngine;
 		static std::uniform_int_distribution<std::mt19937::result_type> s_Distribution;
 	};
 
-	std::mt19937 Random::s_RandomEngine;
+	thread_local std::mt19937 Random::s_RandomEngine;
 	std::uniform_int_distribution<std::mt19937::result_type> Random::s_Distribution;
 }
