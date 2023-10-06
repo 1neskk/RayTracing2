@@ -30,6 +30,7 @@ struct Material
 	glm::vec3 albedo{ 1.0f };
 	float diffuse{ 0.0f };
 	float specular{ 0.0f };
+	float shininess{ 0.0f };
 
 	glm::vec3 emissionColor{ 0.0f };
 	float emissionIntensity = 0.0f;
@@ -43,6 +44,7 @@ struct Settings
 {
 	bool accumulation = true;
 	bool skyLight = false;
+	bool fastRandom = false;
 };
 
 struct Scene

@@ -74,6 +74,7 @@ public:
 		ImGui::Text("Last render time: %.3fms | (%.1f FPS)", m_lastRenderTime, io.Framerate);
 
 		ImGui::Checkbox("Sky Light", &m_renderer.getSettings().skyLight);
+		ImGui::Checkbox("Fast Random", &m_renderer.getSettings().fastRandom);
 
 		ImGui::Checkbox("Accumulation", &m_renderer.getSettings().accumulation);
 		if (ImGui::Button("Reset"))
