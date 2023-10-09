@@ -17,3 +17,9 @@ Continuation of my previous [Ray Tracing](https://github.com/1neskk/raytracing) 
 1. Clone recursively: `git clone --recursive https://github.com/1neskk/RayTracing2`
 2. Run `script/setup.bat` to generate the solution and project files
 3. Then open RayTracing.sln and hit F5 (preferably change configuration to Release first, for the sake of performance)
+
+#### To do
+- [ ] Run on GPU as Vulkan compute shader (may take a while)
+- [x] Emissive materials
+- [ ] Implement specular material component
+- [x] "Better" random algorithm
