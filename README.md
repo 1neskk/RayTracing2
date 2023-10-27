@@ -1,5 +1,5 @@
 # Ray Tracing
-Remake of my previous [Ray Tracing](https://github.com/1neskk/raytracing) project
+<!-- Remake of my previous [Ray Tracing](https://github.com/1neskk/raytracing) project -->
 ![image](https://github.com/1neskk/RayTracing2/assets/113075816/f2b1e50c-11c6-426c-812b-c89a88347e63)
 
 **Officially supports Windows 10/11 and Visual Studio 2022.**
